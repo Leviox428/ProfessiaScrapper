@@ -5,7 +5,7 @@ db = FirebaseInitializer.db
 dataRoutesBlueprint = Blueprint('data', __name__)
 
 @dataRoutesBlueprint.route('/get-data', methods=['GET'])
-def getData():
+def GetData():
     try:
         collectionRef = db.collection('data') 
         docs = collectionRef.stream()

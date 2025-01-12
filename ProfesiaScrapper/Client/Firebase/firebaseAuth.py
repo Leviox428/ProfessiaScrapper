@@ -1,7 +1,7 @@
 import requests
 import os
-from Firebase.Database.userManager import UserManager
-from Firebase.Database.DataModels.user import User
+from DataModels.user import User
+from ProfesiaScrapper.Client.Server.userDataManager import UserDataManager
 from dotenv import load_dotenv
 
 class FirebaseAuth:
@@ -9,6 +9,7 @@ class FirebaseAuth:
 
     def __init__(self):
         load_dotenv()
+        self.serverUrl = "http://127.0.0.1:5000/user"
         self.API_KEY = os.getenv('API_KEY')
     
     def LoginUser(self, email, password):
@@ -21,14 +22,14 @@ class FirebaseAuth:
         response = requests.post(url, json=payload)
         if response.status_code != 200:
             return False
-        userDocument = UserManager.FindUserByEmail(email)
-        if not userDocument.exists:
-            return False
+        UserDataManager.FindUserByEmail(email)
+       # if not userDocument.exists:
+        #    return False
         
-        id = userDocument.id
-        username = userDocument.to_dict().get("username")
+        #id = userDocument.id
+        #username = userDocument.to_dict().get("username")
 
-        FirebaseAuth.user = User(id, username, email)
+        #FirebaseAuth.user = User(id, username, email)
 
         return True
 
@@ -40,16 +41,24 @@ class FirebaseAuth:
             "password": password,
             "returnSecureToken": True
         }
-        response = requests.post(url, json=payload)
-        if response.status_code != 200:
-            return False
-        data = response.json()
-        success = UserManager.CreateUser(data["localId"], username, email)
-        if not success: 
-            self.DeleteUser(data["idToken"])
-            return False   
-        FirebaseAuth.user = User(data["localId"], username, email)
-        return True
+        try:
+            response = requests.post(url, json=payload)
+            if response.status_code != 200:
+                return "Error registering user"
+            data = response.json()
+            userData = {
+                "userID": data["localId"],
+                "email": email
+            }
+            endpoint = "/create-user"
+            response = requests.post(f"{self.serverUrl}{endpoint}", json=userData)
+            if response.status_code != 201:
+                self.DeleteUser(data["idToken"])
+                return "Error creating user in db"   
+            FirebaseAuth.user = User(data["localId"], username, email)
+            return "User registered successfully"
+        except Exception:
+            return "Unknown error occured"
 
     def DeleteUser(self, idToken):
         url = f"https://identitytoolkit.googleapis.com/v1/accounts:delete?key={self.API_KEY}"

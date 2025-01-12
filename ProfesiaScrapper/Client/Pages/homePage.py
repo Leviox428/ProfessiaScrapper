@@ -1,13 +1,11 @@
 import customtkinter as ctk
 from Interfaces.page import Page
 from Util.fontConfig import FontConfig
-from Firebase.Database.dataManager import DataManager
 
 
 class HomePage(ctk.CTkFrame, Page):
      def __init__(self, parent, controller):
         super().__init__(parent)
-        self.data = DataManager.GetData()
         self.controller = controller     
         self.CreatePage()
 

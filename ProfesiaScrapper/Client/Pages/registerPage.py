@@ -74,12 +74,11 @@ class RegisterPage(ctk.CTkFrame, Page):
             return
             
         else:
-            success = self.auth.RegisterUser(email, password, username)
-            if success:
+            message = self.auth.RegisterUser(email, password, username)
+            self.errorLabel.configure(text=message) 
+            self.errorLabel.pack(in_=self.widgetPanel)
+            if message == "User registered successfully":
                 self.controller.ShowPage("LoginPage")
-            else:
-                self.errorLabel.configure(text="There was an error registering the user") 
-                self.errorLabel.pack(in_=self.widgetPanel)
 
     def OnLoginLinkClicked(self, event):
         self.controller.ShowPage("LoginPage")
