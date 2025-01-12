@@ -2,7 +2,6 @@ import customtkinter as ctk
 from Interfaces.page import Page
 from Util.fontConfig import FontConfig
 from Firebase.Database.dataManager import DataManager
-from Util.webScrapper import WebScrapper
 
 
 class HomePage(ctk.CTkFrame, Page):
