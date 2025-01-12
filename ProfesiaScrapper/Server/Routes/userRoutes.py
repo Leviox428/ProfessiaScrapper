@@ -9,6 +9,7 @@ def CreateUser():
         db = FirebaseInitializer.db
         userID = request.json.get('userID')
         email = request.json.get('email')
+        username = request.json.get('username')
 
         if not userID or not email:
             return jsonify({"error": "userID and email are required"}), 400
@@ -17,6 +18,7 @@ def CreateUser():
 
         collectionRef.document(userID).set({
             'email': email,
+            'username': username
         })
 
         return jsonify({"message": "User created successfully"}), 201  

@@ -1,7 +1,7 @@
 import requests
 import os
 from DataModels.user import User
-from ProfesiaScrapper.Client.Server.userDataManager import UserDataManager
+from Server.userDataManager import UserDataManager
 from dotenv import load_dotenv
 
 class FirebaseAuth:
@@ -21,17 +21,10 @@ class FirebaseAuth:
         }
         response = requests.post(url, json=payload)
         if response.status_code != 200:
-            return False
-        UserDataManager.FindUserByEmail(email)
-       # if not userDocument.exists:
-        #    return False
-        
-        #id = userDocument.id
-        #username = userDocument.to_dict().get("username")
-
-        #FirebaseAuth.user = User(id, username, email)
-
-        return True
+            return "Wrong login credentials"
+        userDataManager = UserDataManager()
+        message = userDataManager.FindUserByEmail(email)
+        return message
 
 
     def RegisterUser(self, email, password, username):
@@ -47,6 +40,7 @@ class FirebaseAuth:
                 return "Error registering user"
             data = response.json()
             userData = {
+                "username": username,
                 "userID": data["localId"],
                 "email": email
             }

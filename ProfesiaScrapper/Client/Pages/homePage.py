@@ -17,19 +17,6 @@ class HomePage(ctk.CTkFrame, Page):
         top.grid_columnconfigure(1, weight=1)
         top.grid_columnconfigure(2, weight=1)
         
-        lastUpdatedLabel = ctk.CTkLabel(top, font=FontConfig.GetFont(14), text="Not updated", text_color="white")
-        if self.data and self.data.get("lastUpdated"):
-            lastUpdatedLabel.configure(text=self.data.get("lastUpdated"))           
-        
-        lastUpdatedLabel.grid(row=0, column=0, padx=15, pady=10, sticky="w")
-
-        updateButton = ctk.CTkButton(top, text="Update", font=FontConfig.GetFont(), width=80, command=self.OnUpdateButtonClicked)
-        updateButton.grid(row=0, column=2, padx=15, sticky="e")
-
-        options = ["Today", "This Week", "This Mont"]
-        self.dateRangeComboBox = ctk.CTkComboBox(top, values=options, font=FontConfig.GetFont(), state="readonly", width=160)
-        self.dateRangeComboBox.grid(row=0, column=1, sticky="") 
-        self.dateRangeComboBox.set("Choose date range")
 
 
 
