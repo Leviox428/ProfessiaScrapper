@@ -44,7 +44,7 @@ class WebScrapper():
 
     def ScrapeRegion(self, regionLink):
         regionJobs = []
-        with ThreadPoolExecutor(maxWorkers=10) as executor:  
+        with ThreadPoolExecutor(max_workers=10) as executor:  
             futures = [executor.submit(self.ScrapePage, regionLink, page) for page in range(1, 51)]
             for future in as_completed(futures):
                 regionJobs.extend(future.result())

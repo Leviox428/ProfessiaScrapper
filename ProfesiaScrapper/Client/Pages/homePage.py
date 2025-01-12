@@ -35,17 +35,6 @@ class HomePage(ctk.CTkFrame, Page):
 
 
 
-     def OnUpdateButtonClicked(self):
-        self.webScrapper = WebScrapper()
-        selectedDateRange = self.dateRangeComboBox.get()
-        daysCount = None 
-        if selectedDateRange == "This Month":
-            daysCount = 31
-        elif selectedDateRange == "This Week":
-            daysCount = 7
-        else:
-            daysCount = 1
-        self.webScrapper.ScrapeAllRegions(daysCount)
         
 
          

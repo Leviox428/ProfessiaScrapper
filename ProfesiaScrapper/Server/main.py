@@ -18,12 +18,17 @@ if __name__ == "__main__":
     # Start the schedule runner in a separate thread
     thread = threading.Thread(target=schedule_runner, daemon=True)
     thread.start()
-    
-    # Start the Flask server
-    app.run(port=5000)
 
-    while True:
-        user_input = input("Type 'exit' to quit: ")
-        if user_input.lower() == 'exit':
-            print("Exiting...")
-            break
+    server_thread = threading.Thread(target=lambda: app.run(port=5000), daemon=True)
+    server_thread.start()
+    time.sleep(1)
+
+    try:
+        while True:
+            user_input = input("Type 'force' to manually trigger the scraping task: ")
+            if user_input.lower() == 'force':
+                print("Forcing web scraping task...")
+                webScrapper.PerformWebScrapping()  # Manually trigger the scraping task
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("\nServer is shutting down...")
