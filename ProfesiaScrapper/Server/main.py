@@ -29,6 +29,7 @@ if __name__ == "__main__":
             if user_input.lower() == 'force':
                 print("Forcing web scraping task...")
                 webScrapper.PerformWebScrapping()  # Manually trigger the scraping task
+                print("Webscrapping done")
             time.sleep(1)
     except KeyboardInterrupt:
         print("\nServer is shutting down...")
