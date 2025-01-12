@@ -1,18 +1,26 @@
 from flask import Flask, request, jsonify
 from Tasks.webScrapper import WebScrapper
+from Firebase.firebaseInitializer import FirebaseInitializer
 import schedule
 import threading
 import time
 
+FirebaseInitializer.Initialize()
 app = Flask(__name__)
-webScrapper = WebScrapper()
-schedule.every(1).hour.do(webScrapper.PerformWebScrapping)
+
+def PerformWebScrapping():
+    print("Starting WebScrapping")
+    webScrapper = WebScrapper()
+    webScrapper.PerformWebScrapping()
+    scrappedData = webScrapper.GetJobPostingsAndAverageWages()
+    print("Webscrapping done")
 
 def schedule_runner():
     while True:
         schedule.run_pending()
         time.sleep(1)
 
+schedule.every(1).hour.do(PerformWebScrapping)
 
 if __name__ == "__main__":
     # Start the schedule runner in a separate thread
@@ -28,8 +36,7 @@ if __name__ == "__main__":
             user_input = input("Type 'force' to manually trigger the scraping task: ")
             if user_input.lower() == 'force':
                 print("Forcing web scraping task...")
-                webScrapper.PerformWebScrapping()  # Manually trigger the scraping task
-                print("Webscrapping done")
+                PerformWebScrapping()  # Manually trigger the scraping task
             time.sleep(1)
     except KeyboardInterrupt:
         print("\nServer is shutting down...")
