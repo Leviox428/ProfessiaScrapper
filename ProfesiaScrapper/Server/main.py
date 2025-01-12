@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify
 from Tasks.webScrapper import WebScrapper
+from Tasks.dataWriter import DataWriter
+from Routes.routes import dataRoutes
 from Firebase.firebaseInitializer import FirebaseInitializer
 import schedule
 import threading
@@ -7,6 +9,7 @@ import time
 
 FirebaseInitializer.Initialize()
 app = Flask(__name__)
+app.register_blueprint(dataRoutes, url_prefix='/data')
 
 def PerformWebScrapping():
     print("Starting WebScrapping")
@@ -14,6 +17,10 @@ def PerformWebScrapping():
     webScrapper.PerformWebScrapping()
     scrappedData = webScrapper.GetJobPostingsAndAverageWages()
     print("Webscrapping done")
+    print("Saving data to db")
+    dataWriter = DataWriter()
+    dataWriter.SaveDataToDB(scrappedData)
+    print("Data saved")
 
 def schedule_runner():
     while True:
