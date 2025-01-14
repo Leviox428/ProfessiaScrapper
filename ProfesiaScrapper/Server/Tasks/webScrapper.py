@@ -48,33 +48,40 @@ class WebScrapper():
             executor.map(lambda item: self.ScrapeRegion(item[0], item[1]), self.regionLinks.items())
 
     def ScrapeRegion(self, region, regionLink):
-        sumOfJobWages = 0
-        numOfJobs = 0
-        for i in range (1, 50):
-            fullLink = self.mainUrl + f"{regionLink}?page_num={i}"
-            response = requests.get(fullLink)
-            if not response:
-                return
-            self.soup = bs(response.content, "html.parser")
-            if not self.soup:
-                return
-            ul = self.soup.find("ul", class_="list")
-            if not ul:
-                return 
-            liTags = [
-                li for li in ul.find_all("li", class_="list-row")
-            ] 
-            for liTag in liTags:
-                numOfJobs += 1
-                sumOfJobWages += self.GetWageFromLabel(liTag)
-                self.ScrapeJobPost(liTag, region)
-        averageWageInRegion = sumOfJobWages / numOfJobs
-        if region in self.jobPostingsAndAverageWageByRegion:
-            self.jobPostingsAndAverageWageByRegion[region].append(averageWageInRegion)
+        try:
+            sumOfJobWages = 0
+            numOfJobs = 0
+            for i in range (1, 5):
+                fullLink = self.mainUrl + f"{regionLink}?page_num={i}"
+                response = requests.get(fullLink)
+                if not response:
+                    return
+                self.soup = bs(response.content, "html.parser")
+                if not self.soup:
+                    return
+                ul = self.soup.find("ul", class_="list")
+                if not ul:
+                    return 
+                liTags = [
+                    li for li in ul.find_all("li", class_="list-row")
+                ] 
+                for liTag in liTags:
+                    wage = self.GetWageFromLabel(liTag)
+                    if wage > 0:
+                        sumOfJobWages += wage
+                        numOfJobs += 1
+                    self.ScrapeJobPost(liTag, region)
+            averageWageInRegion = sumOfJobWages / numOfJobs
+            if region in self.jobPostingsAndAverageWageByRegion:
+                self.jobPostingsAndAverageWageByRegion[region].append(averageWageInRegion)
+        except Exception as e:
+            i = 0
             
     def GetWageFromLabel(self, liTag):
         try:
             span = liTag.find("span", class_="label-group")
+            if not span:
+                return 0
             a = span.find("a")
             wageLabel = a.find("span", class_="label")
             wageLabelText = wageLabel.get_text(strip=True)
@@ -100,12 +107,16 @@ class WebScrapper():
     def ScrapeJobPost(self, liTag, region):
         spanEmployer = liTag.find("span", class_="employer")
         spanJobLocation = liTag.find("span", class_="job-location")
-        span = liTag.find("span", class_="label-group")
-        a = span.find("a")
-        wageLabel = a.find("span", class_="label")
-        wage = wageLabel.get_text(strip=True)
+        spanWge = liTag.find("span", class_="label-group")
+        spanTitle = liTag.find("span", class_="title")
+        wage = 0
+        if spanWge:
+             a = spanWge.find("a")
+             wageLabel = a.find("span", class_="label")
+             wage = wageLabel.get_text()
         employer = spanEmployer.get_text()
-        jobLocation = spanJobLocation.get_test()
-        jobPost = JobPost(region, wage, employer, jobLocation)
+        title = spanTitle.get_text()
+        jobLocation = spanJobLocation.get_text()
+        jobPost = JobPost(region, wage, employer, jobLocation, title)
         self.jobs.append(jobPost)
 

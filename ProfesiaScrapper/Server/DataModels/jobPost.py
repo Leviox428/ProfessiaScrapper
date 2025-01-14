@@ -6,3 +6,4 @@ class JobPost:
     wage: int
     employer: str
     jobLocation: str
+    jobTitle: str
