@@ -42,6 +42,8 @@ class LoginPage(ctk.CTkFrame, Page):
     def OnLoginButtonClicked(self):
         email = self.emailEntry.get()
         password = self.passwordEntry.get()
+        email = "test2@gmail.com"
+        password = "12345678"
         if not email or not password:
             self.errorLabel.configure(text="Missing login credentials") 
             self.errorLabel.pack(in_=self.widgetPanel)

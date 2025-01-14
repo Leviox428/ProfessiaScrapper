@@ -45,7 +45,7 @@ class WebScrapper():
     def ScrapeRegion(self, region, regionLink):
         sumOfJobWages = 0
         numOfJobs = 0
-        for i in range (1, 5):
+        for i in range (1, 50):
             fullLink = self.mainUrl + f"{regionLink}?page_num={i}"
             response = requests.get(fullLink)
             if not response:
@@ -59,8 +59,8 @@ class WebScrapper():
             liTags = [
                 li for li in ul.find_all("li", class_="list-row")
             ] 
-            numOfJobs += len(liTags)
             for wageLabel in liTags:
+                numOfJobs += 1
                 sumOfJobWages += self.GetWageFromLabel(wageLabel)
         averageWageInRegion = sumOfJobWages / numOfJobs
         if region in self.jobPostingsAndAverageWageByRegion:

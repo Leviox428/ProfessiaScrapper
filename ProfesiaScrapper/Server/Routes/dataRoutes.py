@@ -1,12 +1,12 @@
 from flask import Blueprint, jsonify, request, abort
 from Firebase.firebaseInitializer import FirebaseInitializer
 
-db = FirebaseInitializer.db
 dataRoutesBlueprint = Blueprint('data', __name__)
 
 @dataRoutesBlueprint.route('/get-data', methods=['GET'])
 def GetData():
     try:
+        db = FirebaseInitializer.db
         collectionRef = db.collection('data') 
         docs = collectionRef.stream()
         regionsData = {}
@@ -17,5 +17,5 @@ def GetData():
             averageWageOfRegion = regionData.get('averageWageOfRegion')
             regionsData[regionName] = [numOfJobPostings, averageWageOfRegion]
         return jsonify(regionsData), 200
-    except Exception:
+    except Exception as e:
         abort(500)

@@ -1,10 +1,13 @@
 import customtkinter as ctk
 from Components.topBar import TopBar
 from Pages.homePage import HomePage
+from Server.regionDataManager import RegionDataManager
+
 
 class Dashboard(ctk.CTkFrame):
     def __init__(self, parent, controller):
         super().__init__(parent)
+        RegionDataManager.LoadRegionDataFromServer()
         self.controller = controller
         self.content = None
         self.CreateDashboard()
