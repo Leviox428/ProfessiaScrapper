@@ -17,11 +17,13 @@ def PerformWebScrapping():
     print("Starting WebScrapping")
     webScrapper = WebScrapper()
     webScrapper.PerformWebScrapping()
-    scrappedData = webScrapper.GetJobPostingsAndAverageWages()
+    scrappedData = webScrapper.GetNumOfJobPostingsAndAverageWages()
+    scrappedJobPosts = webScrapper.GetJopPosts()
     print("Webscrapping done")
     print("Saving data to db")
     dataWriter = DataWriter()
-    dataWriter.SaveDataToDB(scrappedData)
+    dataWriter.SaveRegionDataToDB(scrappedData)
+    dataWriter.SaveJobPostsToDB(scrappedJobPosts)
     print("Data saved")
 
 def schedule_runner():

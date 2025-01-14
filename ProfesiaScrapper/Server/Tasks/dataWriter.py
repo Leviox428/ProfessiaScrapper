@@ -2,7 +2,7 @@ from Firebase.firebaseInitializer import FirebaseInitializer
 class DataWriter:
     def __init__(self):
         self.db = FirebaseInitializer.db
-    def SaveDataToDB(self, data):
+    def SaveRegionDataToDB(self, data):
         collectionRef = self.db.collection('data')
         for regionName, values in data.items():
             numOfJobPostings, averageWageOfRegion = values
@@ -11,3 +11,12 @@ class DataWriter:
             'numOfJobPostings': numOfJobPostings,
             'averageWageOfRegion': averageWageOfRegion
         })
+    def SaveJobPostsToDB(self, data):
+        collectionRef = self.db.collection('jobs')
+        for jobPost in data:
+            collectionRef.add({
+                'Region': jobPost.regionName,
+                'Wage': jobPost.wage,
+                'Employer': jobPost.employer,
+                'Job location': jobPost.jobLocation
+            })

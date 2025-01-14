@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup as bs
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from DataModels.jobPost import JobPost
 import re
 
 
@@ -9,14 +10,18 @@ class WebScrapper():
         self.mainUrl = "https://www.profesia.sk"
         self.jobPostingsAndAverageWageByRegion = {}
         self.regionLinks = {}
+        self.jobs = []
         self.soup = None
         
         response = requests.get(self.mainUrl)
         if response:
             self.soup = bs(response.content, "html.parser")
 
-    def GetJobPostingsAndAverageWages(self):
+    def GetNumOfJobPostingsAndAverageWages(self):
         return self.jobPostingsAndAverageWageByRegion
+
+    def GetJopPosts(self):
+        return self.jobs
 
     def PerformWebScrapping(self):
         if not self.soup:
@@ -59,16 +64,17 @@ class WebScrapper():
             liTags = [
                 li for li in ul.find_all("li", class_="list-row")
             ] 
-            for wageLabel in liTags:
+            for liTag in liTags:
                 numOfJobs += 1
-                sumOfJobWages += self.GetWageFromLabel(wageLabel)
+                sumOfJobWages += self.GetWageFromLabel(liTag)
+                self.ScrapeJobPost(liTag, region)
         averageWageInRegion = sumOfJobWages / numOfJobs
         if region in self.jobPostingsAndAverageWageByRegion:
             self.jobPostingsAndAverageWageByRegion[region].append(averageWageInRegion)
             
-    def GetWageFromLabel(self, wageLabel):
+    def GetWageFromLabel(self, liTag):
         try:
-            span = wageLabel.find("span", class_="label-group")
+            span = liTag.find("span", class_="label-group")
             a = span.find("a")
             wageLabel = a.find("span", class_="label")
             wageLabelText = wageLabel.get_text(strip=True)
@@ -90,4 +96,16 @@ class WebScrapper():
         if not hourWage:
             return 0
         return hourWage * hoursPerDay * daysPerWeek * weeksPerMonth
+
+    def ScrapeJobPost(self, liTag, region):
+        spanEmployer = liTag.find("span", class_="employer")
+        spanJobLocation = liTag.find("span", class_="job-location")
+        span = liTag.find("span", class_="label-group")
+        a = span.find("a")
+        wageLabel = a.find("span", class_="label")
+        wage = wageLabel.get_text(strip=True)
+        employer = spanEmployer.get_text()
+        jobLocation = spanJobLocation.get_test()
+        jobPost = JobPost(region, wage, employer, jobLocation)
+        self.jobs.append(jobPost)
 
