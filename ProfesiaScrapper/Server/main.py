@@ -26,7 +26,7 @@ def PerformWebScrapping():
     dataWriter.SaveJobPostsToDB(scrappedJobPosts)
     print("Data saved")
 
-def schedule_runner():
+def ScheduleRunner():
     while True:
         schedule.run_pending()
         time.sleep(1)
@@ -35,17 +35,17 @@ schedule.every(1).hour.do(PerformWebScrapping)
 
 if __name__ == "__main__":
     # Start the schedule runner in a separate thread
-    thread = threading.Thread(target=schedule_runner, daemon=True)
+    thread = threading.Thread(target=ScheduleRunner, daemon=True)
     thread.start()
 
-    server_thread = threading.Thread(target=lambda: app.run(port=5000), daemon=True)
-    server_thread.start()
+    serverThread = threading.Thread(target=lambda: app.run(port=5000), daemon=True)
+    serverThread.start()
     time.sleep(1)
 
     try:
         while True:
-            user_input = input("Type 'force' to manually trigger the scraping task: ")
-            if user_input.lower() == 'force':
+            userInput = input("Type 'force' to manually trigger the scraping task: ")
+            if userInput.lower() == 'force':
                 print("Forcing web scraping task...")
                 PerformWebScrapping()  # Manually trigger the scraping task
             time.sleep(1)

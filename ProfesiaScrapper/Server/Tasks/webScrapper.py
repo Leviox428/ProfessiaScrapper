@@ -51,7 +51,7 @@ class WebScrapper():
         try:
             sumOfJobWages = 0
             numOfJobs = 0
-            for i in range (1, 5):
+            for i in range (1, 50):
                 fullLink = self.mainUrl + f"{regionLink}?page_num={i}"
                 response = requests.get(fullLink)
                 if not response:

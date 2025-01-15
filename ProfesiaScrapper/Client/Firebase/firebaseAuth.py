@@ -10,7 +10,7 @@ class FirebaseAuth:
     def __init__(self):
         load_dotenv()
         self.serverUrl = "http://127.0.0.1:5000/user"
-        self.API_KEY = os.getenv('API_KEY')
+        self.API_KEY = os.getenv('API_KEY2')
     
     def LoginUser(self, email, password):
         url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={self.API_KEY}"

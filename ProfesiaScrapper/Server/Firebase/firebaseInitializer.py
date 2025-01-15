@@ -6,7 +6,7 @@ class FirebaseInitializer:
     @staticmethod
     def Initialize():
         try:
-            service_account_path = "ProfesiaScrapper\Server\Firebase\serviceAccountKey.json"
+            service_account_path = "ProfesiaScrapper\Server\Firebase\serviceAccountKey2.json"
             cred = credentials.Certificate(service_account_path)
             firebase_admin.initialize_app(cred)
             db = firestore.client()
