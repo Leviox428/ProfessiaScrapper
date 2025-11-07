@@ -39,9 +39,11 @@ This makes **ProfesiaScrapper** a useful tool for tracking the dynamics of Slova
 
 ### 🖼️ Interface Preview
 
-| Login | Dashboard |
+| Client| Server|
 |:--:|:--:|
-| ![Login](Showcase/login.png) | ![Dashboard](Showcase/dashboard.png) |
+| ![Login](Showcase/client.png) | ![Dashboard](Showcase/server.png) |
+
+Data from 7.11.2025
 
 ### 📊 Data Visualization
 
